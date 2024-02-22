@@ -1,0 +1,33 @@
+{
+  "name": "lab3",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "postcompile": "node postCompile.js",
+    "compile": "tsc && npm run postcompile",
+    "dev": "node --loader ts-node/esm src/index.ts",
+    "start": "npm run compile && node ./dist/index.js",
+    "generate": "graphql-codegen",
+    "prepopulate": "node prepopulate.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "@apollo/server": "^4.10.0",
+    "fs": "^0.0.1-security",
+    "graphql": "^16.8.1",
+    "mongoose": "^8.1.3",
+    "redis": "^4.6.13"
+  },
+  "devDependencies": {
+    "@graphql-codegen/cli": "^5.0.2",
+    "@graphql-codegen/typescript": "^4.0.5",
+    "@graphql-codegen/typescript-resolvers": "^4.0.5",
+    "@types/node": "^20.11.19",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  }
+}
