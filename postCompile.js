@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 
 function addJsExtension(dir) {
+  // Helper
   const files = fs.readdirSync(dir, { withFileTypes: true });
 
   for (const file of files) {
