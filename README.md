@@ -1,4 +1,4 @@
-# CS-554 Lab 3: Creating a GraphQL Server with Apollo, Redis, and MongoDB
+# CS-554: GraphQL Server with Apollo, Redis, and MongoDB
 
 ## Overview
 In this project for CS-554, we're tasked with building a GraphQL server leveraging Apollo Server, Redis for caching, and MongoDB as our data storage. Our application focuses on managing and querying data related to artists, albums, and record companies.
@@ -92,9 +92,37 @@ scalar Date
 
 ## Queries
 My server supports several queries, including fetching all artists, albums, record companies, getting entities by ID, fetching songs by artist ID, albums by genre, companies by founded year, and searching artists by name.
+```graphql
+type Query {
+    artists: [Artist]
+    albums: [Album]
+    recordCompanies: [RecordCompany]
+    getArtistById(_id: String!): Artist
+    getAlbumById(_id: String!): Album
+    getCompanyById(_id: String!): RecordCompany
+    getSongsByArtistId(artistId: String!): [String]
+    albumsByGenre(genre: MusicGenre!): [Album]
+    companyByFoundedYear(min: Int!, max: Int!): [RecordCompany]
+    searchArtistByArtistName(searchTerm: String!): [Artist]
+}
+```
 
 ## Mutations
 Mutations allow us to add, edit, and remove artists, albums, and record companies. For each action, we ensure data validation (e.g., date formats, name contents) and update both MongoDB and the Redis cache accordingly.
+```graphql
+type Mutation {
+  addArtist(name: String!, dateFormed: Date!, members: [String!]!): Artist
+  editArtist(_id: String!, name: String, dateFormed: Date, members: [String!]): Artist
+  removeArtist(_id: String!): Artist
+  addCompany(name: String!, foundedYear: Int!, country: String!): RecordCompany
+  editCompany(_id: String!, name: String, foundedYear: Int, country: String): RecordCompany
+  removeCompany(_id: String!): RecordCompany
+  addAlbum(title: String!, releaseDate: Date!, genre: MusicGenre!, songs: [String!]!, artistId: String!, companyId: String!): Album
+  editAlbum(_id: String!, title: String, releaseDate: Date, genre: MusicGenre, songs: [String!], artistId: String, companyId: String): Album
+  removeAlbum(_id: String!): Album
+}
+
+```
 
 ## Caching Strategy with Redis
 I use Redis to cache query results from MongoDB to improve response times for frequently accessed data. This includes caching lists of all artists, albums, record companies, individual entities by ID, songs by artist ID, albums by genre, and search results. Cache keys are carefully designed to facilitate efficient retrieval and invalidation.
