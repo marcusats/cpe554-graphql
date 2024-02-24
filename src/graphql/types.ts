@@ -51,6 +51,85 @@ export enum MusicGenre {
   RAndB = 'R_AND_B'
 }
 
+export type Mutation = {
+  __typename?: 'Mutation';
+  addAlbum?: Maybe<Album>;
+  addArtist?: Maybe<Artist>;
+  addCompany?: Maybe<RecordCompany>;
+  editAlbum?: Maybe<Album>;
+  editArtist?: Maybe<Artist>;
+  editCompany?: Maybe<RecordCompany>;
+  removeAlbum?: Maybe<Album>;
+  removeArtist?: Maybe<Artist>;
+  removeCompany?: Maybe<RecordCompany>;
+};
+
+
+export type MutationAddAlbumArgs = {
+  artistId: Scalars['String']['input'];
+  companyId: Scalars['String']['input'];
+  genre: MusicGenre;
+  releaseDate: Scalars['Date']['input'];
+  songs: Array<Scalars['String']['input']>;
+  title: Scalars['String']['input'];
+};
+
+
+export type MutationAddArtistArgs = {
+  dateFormed: Scalars['Date']['input'];
+  members: Array<Scalars['String']['input']>;
+  name: Scalars['String']['input'];
+};
+
+
+export type MutationAddCompanyArgs = {
+  country: Scalars['String']['input'];
+  foundedYear: Scalars['Int']['input'];
+  name: Scalars['String']['input'];
+};
+
+
+export type MutationEditAlbumArgs = {
+  _id: Scalars['String']['input'];
+  artistId?: InputMaybe<Scalars['String']['input']>;
+  companyId?: InputMaybe<Scalars['String']['input']>;
+  genre?: InputMaybe<MusicGenre>;
+  releaseDate?: InputMaybe<Scalars['Date']['input']>;
+  songs?: InputMaybe<Array<Scalars['String']['input']>>;
+  title?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type MutationEditArtistArgs = {
+  _id: Scalars['String']['input'];
+  dateFormed?: InputMaybe<Scalars['Date']['input']>;
+  members?: InputMaybe<Array<Scalars['String']['input']>>;
+  name?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type MutationEditCompanyArgs = {
+  _id: Scalars['String']['input'];
+  country?: InputMaybe<Scalars['String']['input']>;
+  foundedYear?: InputMaybe<Scalars['Int']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type MutationRemoveAlbumArgs = {
+  _id: Scalars['String']['input'];
+};
+
+
+export type MutationRemoveArtistArgs = {
+  _id: Scalars['String']['input'];
+};
+
+
+export type MutationRemoveCompanyArgs = {
+  _id: Scalars['String']['input'];
+};
+
 export type Query = {
   __typename?: 'Query';
   albums?: Maybe<Array<Maybe<Album>>>;
@@ -188,6 +267,7 @@ export type ResolversTypes = {
   Date: ResolverTypeWrapper<Scalars['Date']['output']>;
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
   MusicGenre: MusicGenre;
+  Mutation: ResolverTypeWrapper<{}>;
   Query: ResolverTypeWrapper<{}>;
   RecordCompany: ResolverTypeWrapper<RecordCompany>;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
@@ -200,6 +280,7 @@ export type ResolversParentTypes = {
   Boolean: Scalars['Boolean']['output'];
   Date: Scalars['Date']['output'];
   Int: Scalars['Int']['output'];
+  Mutation: {};
   Query: {};
   RecordCompany: RecordCompany;
   String: Scalars['String']['output'];
@@ -230,6 +311,18 @@ export interface DateScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes
   name: 'Date';
 }
 
+export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
+  addAlbum?: Resolver<Maybe<ResolversTypes['Album']>, ParentType, ContextType, RequireFields<MutationAddAlbumArgs, 'artistId' | 'companyId' | 'genre' | 'releaseDate' | 'songs' | 'title'>>;
+  addArtist?: Resolver<Maybe<ResolversTypes['Artist']>, ParentType, ContextType, RequireFields<MutationAddArtistArgs, 'dateFormed' | 'members' | 'name'>>;
+  addCompany?: Resolver<Maybe<ResolversTypes['RecordCompany']>, ParentType, ContextType, RequireFields<MutationAddCompanyArgs, 'country' | 'foundedYear' | 'name'>>;
+  editAlbum?: Resolver<Maybe<ResolversTypes['Album']>, ParentType, ContextType, RequireFields<MutationEditAlbumArgs, '_id'>>;
+  editArtist?: Resolver<Maybe<ResolversTypes['Artist']>, ParentType, ContextType, RequireFields<MutationEditArtistArgs, '_id'>>;
+  editCompany?: Resolver<Maybe<ResolversTypes['RecordCompany']>, ParentType, ContextType, RequireFields<MutationEditCompanyArgs, '_id'>>;
+  removeAlbum?: Resolver<Maybe<ResolversTypes['Album']>, ParentType, ContextType, RequireFields<MutationRemoveAlbumArgs, '_id'>>;
+  removeArtist?: Resolver<Maybe<ResolversTypes['Artist']>, ParentType, ContextType, RequireFields<MutationRemoveArtistArgs, '_id'>>;
+  removeCompany?: Resolver<Maybe<ResolversTypes['RecordCompany']>, ParentType, ContextType, RequireFields<MutationRemoveCompanyArgs, '_id'>>;
+};
+
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   albums?: Resolver<Maybe<Array<Maybe<ResolversTypes['Album']>>>, ParentType, ContextType>;
   albumsByGenre?: Resolver<Maybe<Array<Maybe<ResolversTypes['Album']>>>, ParentType, ContextType, RequireFields<QueryAlbumsByGenreArgs, 'genre'>>;
@@ -257,6 +350,7 @@ export type Resolvers<ContextType = any> = {
   Album?: AlbumResolvers<ContextType>;
   Artist?: ArtistResolvers<ContextType>;
   Date?: GraphQLScalarType;
+  Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   RecordCompany?: RecordCompanyResolvers<ContextType>;
 };

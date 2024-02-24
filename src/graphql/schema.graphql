@@ -53,3 +53,16 @@ type Query {
     companyByFoundedYear(min: Int!, max: Int!): [RecordCompany]
     searchArtistByArtistName(searchTerm: String!): [Artist]
 }
+
+type Mutation {
+  addArtist(name: String!, dateFormed: Date!, members: [String!]!): Artist
+  editArtist(_id: String!, name: String, dateFormed: Date, members: [String!]): Artist
+  removeArtist(_id: String!): Artist
+  addCompany(name: String!, foundedYear: Int!, country: String!): RecordCompany
+  editCompany(_id: String!, name: String, foundedYear: Int, country: String): RecordCompany
+  removeCompany(_id: String!): RecordCompany
+  addAlbum(title: String!, releaseDate: Date!, genre: MusicGenre!, songs: [String!]!, artistId: String!, companyId: String!): Album
+  editAlbum(_id: String!, title: String, releaseDate: Date, genre: MusicGenre, songs: [String!], artistId: String, companyId: String): Album
+  removeAlbum(_id: String!): Album
+}
+

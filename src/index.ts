@@ -1,9 +1,9 @@
 import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
-import Resolvers from './graphql/resolvers';
+import resolvers from './graphql/resolvers';
 import { initializeDatabases } from './config/databases';
 import { typeDefs } from './graphql/typeDef';
-import client from './redis/connect';
+
 
 
 
@@ -11,11 +11,8 @@ import client from './redis/connect';
 const createApolloServer = () => {
   return new ApolloServer({
     typeDefs,
-    Resolvers,
-    context: async ({ req, res }) => ({
-      redisClient: client,
-    }),
-  } as any);
+    resolvers,
+  });
 };
 
 const startServer = async () => {

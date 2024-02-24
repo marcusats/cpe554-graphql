@@ -1,7 +1,7 @@
 // prepopulate.js
 import mongoose from 'mongoose';
 import { Schema, model } from 'mongoose';
-// Artist Schema
+
 const artistSchema = new Schema({
   name: { type: String, required: true },
   dateFormed: { type: Date, required: true },
@@ -10,7 +10,7 @@ const artistSchema = new Schema({
 });
 const Artist = model('Artist', artistSchema);
 
-// Album Schema
+
 const albumSchema = new Schema({
   title: { type: String, required: true },
   releaseDate: { type: Date, required: true },
@@ -21,7 +21,7 @@ const albumSchema = new Schema({
 });
 const Album = model('Album', albumSchema);
 
-// RecordCompany Schema
+
 const recordCompanySchema = new Schema({
   name: { type: String, required: true },
   foundedYear: { type: Number, required: true },
@@ -30,47 +30,58 @@ const recordCompanySchema = new Schema({
 });
 const RecordCompany = model('RecordCompany', recordCompanySchema);
 
-// MongoDB Connection String
-const mongodbConnectionStr = "mongodb+srv://marcos:pVFDWJ891cRDz53g@cluster0.ofr2q.mongodb.net/Salazar-Torres-CS554-Lab3?retryWrites=true&w=majority&appName=Cluster0";
 
-// Connect to MongoDB
+const mongodbConnectionStr = "";
+
+
 mongoose.connect(mongodbConnectionStr, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.error('MongoDB connection error:', err));
 
-// Function to create and save sample data
+
 async function createSampleData() {
-  // Create a record company
-  const recordCompany = new RecordCompany({
-    name: "Sample Record Company",
-    foundedYear: 1980,
-    country: "USA",
-  });
-  await recordCompany.save();
+ 
+  const rockstarRecords = await new RecordCompany({ name: "Rockstar Records", foundedYear: 1975, country: "USA" }).save();
+  const jazzFusionLtd = await new RecordCompany({ name: "JazzFusion Ltd.", foundedYear: 1980, country: "UK" }).save();
 
-  // Create an artist
-  const artist = new Artist({
-    name: "Sample Artist",
-    dateFormed: new Date("1970-01-01"),
-    members: ["Member 1", "Member 2"],
-  });
-  await artist.save();
+ 
+  const theRockLegends = await new Artist({ name: "The Rock Legends", dateFormed: new Date("1965-07-01"), members: ["Member A", "Member B"] }).save();
+  const jazzMasters = await new Artist({ name: "Jazz Masters", dateFormed: new Date("1970-01-01"), members: ["Member C", "Member D"] }).save();
 
-  // Create an album
-  const album = new Album({
-    title: "Sample Album",
-    releaseDate: new Date("1985-07-13"),
+
+  const albumRock = await new Album({
+    title: "Rocking The World",
+    releaseDate: new Date("1982-05-15"),
     genre: "Rock",
-    artistId: artist._id,
-    recordCompanyId: recordCompany._id,
-    songs: ["Song 1", "Song 2", "Song 3"],
-  });
-  await album.save();
+    artistId: theRockLegends._id,
+    recordCompanyId: rockstarRecords._id,
+    songs: ["Rock Anthem", "The Legends Continue"]
+  }).save();
 
-  console.log('Sample data created');
+  const albumJazz = await new Album({
+    title: "Jazz in the Night",
+    releaseDate: new Date("1985-11-20"),
+    genre: "Jazz",
+    artistId: jazzMasters._id,
+    recordCompanyId: jazzFusionLtd._id,
+    songs: ["Smooth Jazz Intro", "Night Groove"]
+  }).save();
+
+ 
+  await Artist.findByIdAndUpdate(theRockLegends._id, { $set: { albums: [albumRock._id], recordCompany: rockstarRecords._id } });
+  await Artist.findByIdAndUpdate(jazzMasters._id, { $set: { albums: [albumJazz._id], recordCompany: jazzFusionLtd._id } });
+
+  await RecordCompany.findByIdAndUpdate(rockstarRecords._id, { $set: { albums: [albumRock._id]} });
+  await RecordCompany.findByIdAndUpdate(jazzFusionLtd._id, { $set: { albums: [albumJazz._id] } });
+
+  console.log('Sample data created with multiple record companies, artists, and albums.');
+
+  const testalbums = await Album.find()
+
+  console.log("TEST:",testalbums[0])
 }
 
-// Run the function to create sample data
+
 createSampleData()
   .then(() => mongoose.disconnect())
   .catch(err => console.error('Failed to create sample data:', err));
