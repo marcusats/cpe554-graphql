@@ -9,13 +9,13 @@ type Artist {
 }
 
 type Album {
-  id: String!
-  title: String!
-  releaseDate: Date!
-  genre: MusicGenre!
-  artist: Artist!
-  recordCompany: RecordCompany!
-  songs: [String!]!
+id: String!
+title: String!
+releaseDate: Date!
+genre: MusicGenre!
+artist: Artist!
+recordCompany: RecordCompany!
+songs: [Song!]!
 }
 
 type RecordCompany {
@@ -25,6 +25,13 @@ type RecordCompany {
   country: String
   albums: [Album!]
   numOfAlbums: Int
+}
+
+type Song { 
+id: String! 
+title: String! 
+duration: String! 
+album: Album! 
 }
 
 enum MusicGenre {
@@ -53,6 +60,9 @@ type Query {
   albumsByGenre(genre: MusicGenre!): [Album]
   companyByFoundedYear(min: Int!, max: Int!): [RecordCompany]
   searchArtistByArtistName(searchTerm: String!): [Artist]
+  getSongById(_id: String!): Song 
+  getSongsByAlbumId(_id: String!): [Song]
+  searchSongByTitle (searchTitleTerm: String!): [Song]
 }
 
 type Mutation {
@@ -65,6 +75,9 @@ removeCompany(_id: String!): RecordCompany
 addAlbum(title: String!, releaseDate: Date!, genre: MusicGenre!, songs: [String!]!, artistId: String!, companyId: String!): Album
 editAlbum(_id: String!, title: String, releaseDate: Date, genre: MusicGenre, songs: [String!], artistId: String, companyId: String): Album
 removeAlbum(_id: String!): Album
+addSong(title: String!, duration: String!, albumId: String!): Song
+editSong(_id: String!, title: String, duration: String, albumId: String): Song
+removeSong(_id: String!): Song
 }
 `;
 

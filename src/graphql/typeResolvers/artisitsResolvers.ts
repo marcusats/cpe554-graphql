@@ -91,7 +91,6 @@ const artistsTypeResolver: ArtistResolvers = {
           title: album.title,
           releaseDate: album.releaseDate.toISOString(),
           genre: album.genre.toUpperCase(),
-          songs: album.songs,
         }));
 
         await client.set(cacheKey, JSON.stringify(transformedAlbums), { EX: 3600 });

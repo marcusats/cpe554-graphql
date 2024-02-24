@@ -1,6 +1,7 @@
 import { Album } from "../../mongodb/models/albums";
 import { Artist } from "../../mongodb/models/artists";
-import { Types, Schema} from 'mongoose';
+import { Song } from "../../mongodb/models/songs";
+import { Schema } from 'mongoose';
 import { RecordCompany } from "../../mongodb/models/recordCompanies";
 import { fetchAlbumsFromDatabase } from "../../mongodb/fetch/database";
 import type { QueryResolvers, Resolvers, AlbumResolvers, MutationResolvers } from "../types";
@@ -13,9 +14,9 @@ const transformAlbum = (albums: any[]): Resolvers['Album'][] => {
       title: album.title,
       releaseDate: album.releaseDate,
       genre: album.genre.toUpperCase(), 
-      songs: album.songs,
     }));
 };
+
 
 const albumsResolver: QueryResolvers['albums'] = async (_, args) => {
     const cacheKey = 'albums';
@@ -117,18 +118,37 @@ const albumTypeResolver: AlbumResolvers = {
         return newRecordCompany;
       }
     },
+    songs: async (parent) => {
+      const cacheKey = `albumSongs:${parent.id}`;
+      let cachedSongs = await client.get(cacheKey);
+    
+      if (cachedSongs) {
+        return JSON.parse(cachedSongs);
+      } else {
+        const songs = await Song.find({ albumId: parent.id }).exec();
+        if (!songs || songs.length === 0) return [];
+    
+        const transformedSongs = songs.map(song => ({
+          __typename: 'Song',
+          id: song._id.toString(),
+          title: song.title,
+          duration: song.duration,
+        }));
+    
+        await client.set(cacheKey, JSON.stringify(transformedSongs), { EX: 3600 });
+        return transformedSongs;
+      }
+    }
   }
 
-  const addAlbumResolver: MutationResolvers['addAlbum'] = async (_, { title, releaseDate, genre, songs, artistId, companyId }) => {
+  const addAlbumResolver: MutationResolvers['addAlbum'] = async (_, { title, releaseDate, genre, artistId, companyId }) => {
 
     if (!/^(0?[1-9]|1[012])\/(0?[1-9]|[12][0-9]|3[01])\/(19|20)\d\d$/.test(releaseDate) || new Date(releaseDate) > new Date() || isNaN(new Date(releaseDate).getTime())) {
       throw new Error('Invalid release date.');
     }
   
 
-    if (songs.some(song => !/^[A-Za-z\s]+$/.test(song))) {
-      throw new Error('Songs must only contain letters A-Z.');
-    }
+
   
   
     const artistExists = await Artist.findById(artistId);
@@ -142,7 +162,6 @@ const albumTypeResolver: AlbumResolvers = {
       title,
       releaseDate: new Date(releaseDate),
       genre: genre.toUpperCase(),
-      songs,
       artistId,
       companyId
     });
@@ -163,7 +182,7 @@ const albumTypeResolver: AlbumResolvers = {
     }
   };
 
-  const editAlbumResolver: MutationResolvers['editAlbum'] = async (_, { _id, title, releaseDate, genre, songs, artistId, companyId }) => {
+  const editAlbumResolver: MutationResolvers['editAlbum'] = async (_, { _id, title, releaseDate, genre, artistId, companyId }) => {
     const album = await Album.findById(_id);
     if (!album) {
       throw new Error('Album not found.');
@@ -173,7 +192,6 @@ const albumTypeResolver: AlbumResolvers = {
     if (title) album.title = title;
     if (releaseDate && /^(0?[1-9]|1[012])\/(0?[1-9]|[12][0-9]|3[01])\/(19|20)\d\d$/.test(releaseDate)) album.releaseDate = new Date(releaseDate);
     if (genre) album.genre = genre.toUpperCase();
-    if (songs && songs.every(song => /^[A-Za-z\s]+$/.test(song))) album.songs = songs;
     if (artistId) album.artistId = new Schema.Types.ObjectId(artistId);
     if (companyId) album.recordCompanyId = new Schema.Types.ObjectId(companyId);
   

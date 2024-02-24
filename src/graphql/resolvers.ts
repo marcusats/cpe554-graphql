@@ -26,6 +26,15 @@ import {
   editAlbumResolver,  
   removeAlbumResolver
 } from './typeResolvers/albumsResolvers';
+import {  
+  getSongByIdResolver,
+  getSongsByAlbumIdResolver,
+  searchSongByTitleResolver,
+  songTypeResolver,
+  addSongResolver,
+  editSongResolver,
+  removeSongResolver 
+} from './typeResolvers/songResolvers';
 
 
 const queryResolvers: QueryResolvers = {
@@ -37,7 +46,10 @@ const queryResolvers: QueryResolvers = {
   getCompanyById:recordCompanyByIdResolver,
   albumsByGenre: albumsByGenreResolver,
   companyByFoundedYear: companyByFoundedYearResolver,
-  searchArtistByArtistName: searchArtistByArtistNameResolver
+  searchArtistByArtistName: searchArtistByArtistNameResolver,
+  getSongById: getSongByIdResolver,
+  getSongsByAlbumId: getSongsByAlbumIdResolver,
+  searchSongByTitle: searchSongByTitleResolver
 
 };
 
@@ -50,7 +62,11 @@ const mutationResolvers: MutationResolvers = {
   removeCompany: removeCompanyResolver,
   addAlbum: addAlbumResolver,
   editAlbum: editAlbumResolver,
-  removeAlbum: removeAlbumResolver
+  removeAlbum: removeAlbumResolver,
+  addSong: addSongResolver,
+  editSong: editSongResolver,
+  removeSong: removeSongResolver
+
 }
 
 const resolvers: Resolvers = {
@@ -59,6 +75,7 @@ const resolvers: Resolvers = {
     Album: albumTypeResolver,
     Artist: artistsTypeResolver,
     RecordCompany: companyTypeResolver,
+    Song: songTypeResolver
   };
   
   export default resolvers;
