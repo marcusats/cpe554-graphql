@@ -53,7 +53,7 @@ Our MongoDB setup involves three primary collections: `artists`, `albums`, `reco
 
 
 ## Schema Definitions
-We define three main GraphQL types (`Artist`, `Album`, `RecordCompany` and `Song`) along with queries and mutations to interact with our data.
+I define three main GraphQL types (`Artist`, `Album`, `RecordCompany` and `Song`) along with queries and mutations to interact with our data.
 
 ### Types 
 ```graphql
@@ -129,7 +129,7 @@ type Query {
 ```
 
 ## Mutations
-Mutations allow us to add, edit, and remove artists, albums, and record companies. For each action, we ensure data validation (e.g., date formats, name contents) and update both MongoDB and the Redis cache accordingly.
+Mutations allow us to add, edit, and remove artists, albums, and record companies. For each action, ensures data validation (e.g., date formats, name contents) and update both MongoDB and the Redis cache accordingly.
 ```graphql
 type Mutation {
   addArtist(name: String!, dateFormed: Date!, members: [String!]!): Artist
@@ -162,7 +162,7 @@ Start the server with `npm start`. The GraphQL playground will be available at h
 
 Before starting the server, you might want to prepopulate your MongoDB database with some initial data for artists, albums, record companies, and songs. This can help you test and interact with your GraphQL API more effectively right from the start.
 
-We have provided a script that automatically creates sample data in your MongoDB database. This script creates multiple record companies, artists, albums, and songs, and establishes the necessary relationships between them.
+I have provided a script that automatically creates sample data in your MongoDB database. This script creates multiple record companies, artists, albums, and songs, and establishes the necessary relationships between them.
 
 ### Running the Prepopulate Script
 
