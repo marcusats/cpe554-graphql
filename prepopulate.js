@@ -51,11 +51,11 @@ async function createSampleData() {
   const rockstarRecords = await new RecordCompany({ name: "Rockstar Records", foundedYear: 1975, country: "USA" }).save();
   const jazzFusionLtd = await new RecordCompany({ name: "JazzFusion Ltd.", foundedYear: 1980, country: "UK" }).save();
 
-  // Create artists
+
   const theRockLegends = await new Artist({ name: "The Rock Legends", dateFormed: new Date("1965-07-01"), members: ["Member A", "Member B"] }).save();
   const jazzMasters = await new Artist({ name: "Jazz Masters", dateFormed: new Date("1970-01-01"), members: ["Member C", "Member D"] }).save();
 
-  // Create albums
+
   const albumRock = await new Album({
     title: "Rocking The World",
     releaseDate: new Date("1982-05-15"),

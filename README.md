@@ -157,3 +157,23 @@ To run this project:
 Ensure MongoDB and Redis are running on your machine.
 Clone the repository and install dependencies with npm install.
 Start the server with `npm start`. The GraphQL playground will be available at http://localhost:4000.
+
+## Prepopulating the Database
+
+Before starting the server, you might want to prepopulate your MongoDB database with some initial data for artists, albums, record companies, and songs. This can help you test and interact with your GraphQL API more effectively right from the start.
+
+We have provided a script that automatically creates sample data in your MongoDB database. This script creates multiple record companies, artists, albums, and songs, and establishes the necessary relationships between them.
+
+### Running the Prepopulate Script
+
+To run the prepopulate script, ensure that your MongoDB instance is running and accessible. Then, execute the following command in your terminal:
+
+```bash
+npm run prepopulate
+```
+
+This command is defined in the package.json file of the project and executes the prepopulate.js script, which connects to your MongoDB database and inserts the sample data.
+
+Make sure you have properly set up your MongoDB connection string in the prepopulate.js script or through your environment variables, depending on how you've configured your project.
+
+After running this command, your database will be populated with the sample data, and you will see a message indicating the successful creation of the data in your terminal. Now, you can start your GraphQL server and begin querying your prepopulated data.
