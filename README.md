@@ -1,10 +1,10 @@
 # CS-554: GraphQL Server with Apollo, Redis, and MongoDB
 
 ## Overview
-In this project for CS-554, we're tasked with building a GraphQL server leveraging Apollo Server, Redis for caching, and MongoDB as our data storage. Our application focuses on managing and querying data related to artists, albums, and record companies.
+In this project for CS-554, we're tasked with building a GraphQL server leveraging Apollo Server, Redis for caching, and MongoDB as our data storage. Our application focuses on managing and querying data related to artists, albums, record companies ans songs.
 
 ## Database Schema
-Our MongoDB setup involves three primary collections: `artists`, `albums`, and `recordcompanies`, structured as follows:
+Our MongoDB setup involves three primary collections: `artists`, `albums`, `recordcompanies`, and `songs` structured as follows:
 
 ### Artists Collection
 ```json
@@ -26,7 +26,7 @@ Our MongoDB setup involves three primary collections: `artists`, `albums`, and `
   "genre": "string",
   "artistId": "ObjectId",
   "recordCompanyId": "ObjectId",
-  "songs": ["array_of_strings"]
+  "songs": ["array_of_songs_ids"]
 }
 ```
 
@@ -40,9 +40,20 @@ Our MongoDB setup involves three primary collections: `artists`, `albums`, and `
   "albums": ["array_of_ObjectIds"]
 }
 ```
+### Songs Collection
+```json
+{
+  "_id": "ObjectId",
+  "title": "string",
+  "duration": "string",
+  "albums": "ObjectId"
+}
+```
+
+
 
 ## Schema Definitions
-We define three main GraphQL types (`Artist`, `Album`, and `RecordCompany`) along with queries and mutations to interact with our data.
+We define three main GraphQL types (`Artist`, `Album`, `RecordCompany` and `Song`) along with queries and mutations to interact with our data.
 
 ### Types 
 ```graphql
@@ -72,6 +83,13 @@ type RecordCompany {
   country: String
   albums: [Album!]!
   numOfAlbums: Int
+}
+
+type Song { 
+ id: String! 
+ title: String! 
+ duration: String! 
+ album: Album! 
 }
 
 enum MusicGenre {
@@ -104,6 +122,9 @@ type Query {
     albumsByGenre(genre: MusicGenre!): [Album]
     companyByFoundedYear(min: Int!, max: Int!): [RecordCompany]
     searchArtistByArtistName(searchTerm: String!): [Artist]
+    getSongById(_id: String!): Song 
+    getSongsByAlbumId(_id: String!): [Song]
+    searchSongByTitle (searchTitleTerm: String!): [Song]
 }
 ```
 
@@ -120,6 +141,9 @@ type Mutation {
   addAlbum(title: String!, releaseDate: Date!, genre: MusicGenre!, songs: [String!]!, artistId: String!, companyId: String!): Album
   editAlbum(_id: String!, title: String, releaseDate: Date, genre: MusicGenre, songs: [String!], artistId: String, companyId: String): Album
   removeAlbum(_id: String!): Album
+  addSong(title: String!, duration: String!, albumId: String!): Song
+  editSong(_id: String!, title: String, duration: String, albumId: String): Song
+  removeSong(_id: String!): Song
 }
 
 ```
