@@ -1,4 +1,4 @@
-import type { Resolvers, QueryResolvers, MutationResolvers, AlbumResolvers} from './types';
+import type { Resolvers, QueryResolvers, MutationResolvers} from './types';
 import { 
   artistsResolver, 
   artistByIdResolver, 
